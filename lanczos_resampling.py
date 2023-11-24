@@ -48,7 +48,7 @@ def lanczos_resampling(original_image, OH, OW, a=3):
     # Resample each channel along the column
     row_sampled_image = row_sampled_image.transpose(0, 2, 1) # Transpose channel data to the front for broadcasting
     col_sampled_image = row_sampled_image[:, :, col_idx_for_sum]  # C by OW by 2a by OH
-    del row_sampled_image # for memory save
+    del row_sampled_image # For memory save
 
     col_sampled_image *= kernel_weights[np.newaxis, np.newaxis, : , :]
     final_image = np.sum(col_sampled_image, axis=2).transpose(2, 1, 0) # H by W by C
@@ -77,7 +77,7 @@ def resample_image(file_path, source_dir, target_dir, short_side_size, quality=9
     rel_paths = os.path.relpath(file_path, source_dir)
     new_file_path = os.path.join(target_dir, rel_paths)
     os.makedirs(os.path.dirname(new_file_path), exist_ok=True) # Create the target directory if it doesn't exist
-    if os.path.exists(new_file_path) == True: return
+    if os.path.exists(new_file_path) == True: return # Override
 
     #
     img = Image.open(file_path) # Open the image
