@@ -10,13 +10,13 @@ def lanczos_resampling(original_image, OH, OW, a=3):
         return vec
     
 
-    # Assuming original_image is in H x W x C format, where C is the channel count (3 for RGB)
+    # Assuming original_image is in H by W by C or H by W format, where C is the channel count
     H, W, *C = original_image.shape
     if C == []:
         original_image = original_image[..., np.newaxis]
     original_image = original_image.astype(np.float64) # H by W by C
 
-    # Compute weighted_sum w.r.t. row for each channel
+    #
     new_row_indices = np.clip((np.arange(OW) + 0.5) * (W/OW) - 0.5, 0, W-1)
     row_idx_for_sum = np.floor(new_row_indices).astype(int) - a + 1
     row_idx_for_sum = np.clip(row_idx_for_sum[:, np.newaxis] + np.arange(0, 2*a), 0, W-1).T
@@ -35,7 +35,7 @@ def lanczos_resampling(original_image, OH, OW, a=3):
     np.get_default_memory_pool().free_all_blocks()
     np.get_default_pinned_memory_pool().free_all_blocks()
 
-    # Compute weighted_sum w.r.t. col for each channel
+    #
     new_col_indices = np.clip((np.arange(OH) + 0.5) * (H/OH) - 0.5, 0, H-1)
     col_idx_for_sum = np.floor(new_col_indices).astype(int) - a + 1
     col_idx_for_sum = np.clip(col_idx_for_sum[:, np.newaxis] + np.arange(0, 2*a), 0, H-1).T
