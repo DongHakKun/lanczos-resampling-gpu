@@ -26,10 +26,11 @@ def lanczos_resampling(original_image, OH, OW, a=3):
     row_sampled_image = original_image[..., row_idx_for_sum] # C by H by 2a by OW
     del original_image # For memory save
 
-    # Apply kernal to normalize for each channel
+    # Normalize kernal
     kernel_weights = L(diff_indices)
     kernel_weights /= kernel_weights.sum(axis=0, keepdims=True)
 
+    # Resampling
     row_sampled_image *= kernel_weights[np.newaxis, np.newaxis, ...]
     row_sampled_image = np.sum(row_sampled_image, axis=2)  # C by H by OW
     np.get_default_memory_pool().free_all_blocks()
@@ -48,10 +49,11 @@ def lanczos_resampling(original_image, OH, OW, a=3):
     col_sampled_image = row_sampled_image[..., col_idx_for_sum]  # C  by OW by 2a by OH
     del row_sampled_image # For memory save
 
-    # Apply kernel and normalize for each channel
+    # Normalize kernal
     kernel_weights = L(diff_indices)
     kernel_weights /= kernel_weights.sum(axis=0, keepdims=True)
 
+    # Resampling
     col_sampled_image *= kernel_weights[np.newaxis, np.newaxis, ...]
     final_image = np.sum(col_sampled_image, axis=2).transpose(2, 1, 0) # H by W by C
     np.get_default_memory_pool().free_all_blocks()
